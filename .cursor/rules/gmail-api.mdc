@@ -1,0 +1,69 @@
+---
+description: Gmail API directa — conexión, funciones y reglas de drafts
+globs: 
+alwaysApply: true
+---
+
+# Gmail API — Conexión directa
+
+## Script
+
+`execution/gmail_client.py` — conexión directa a Gmail API via OAuth2.
+Cuenta: [TU_EMAIL]
+
+## Funciones disponibles
+
+### CLI
+
+```bash
+python3 execution/gmail_client.py auth                    # autenticación OAuth2
+python3 execution/gmail_client.py fetch "query" 5         # buscar emails
+python3 execution/gmail_client.py list_drafts 10          # listar borradores
+python3 execution/gmail_client.py get_email MESSAGE_ID    # obtener email por ID
+python3 execution/gmail_client.py delete_draft DRAFT_ID   # eliminar borrador
+python3 execution/gmail_client.py create_draft '{"to":"a@b.com","subject":"Hi","body":"Hello","is_html":true,"thread_id":"abc"}'
+```
+
+### Python
+
+```python
+from execution.gmail_client import fetch_emails, list_drafts, create_draft, delete_draft, get_email
+
+fetch_emails("from:empresa subject:producto", max_results=5)
+list_drafts(max_results=10)
+create_draft(to="a@b.com", subject="Asunto", body="<html>", is_html=True, thread_id="abc123")
+delete_draft("draft_id")
+get_email("message_id")
+```
+
+## Reglas de borradores
+
+### NUNCA usar update — siempre delete + create
+
+Si necesitas modificar un borrador existente:
+1. `delete_draft(old_draft_id)`
+2. `create_draft(...)` con el nuevo contenido y el `thread_id` original
+
+Actualizar borradores pierde el `thread_id` y el draft queda fuera del hilo.
+
+### thread_id
+
+- SIEMPRE especificar `thread_id` cuando el borrador es respuesta a un hilo existente
+- Obtener el `thread_id` del email original: `fetch_emails("to:email@empresa.com", 3)` → campo `threadId`
+
+### is_html
+
+- SIEMPRE pasar `is_html=True` cuando el body contiene HTML o tags `<br>`
+- Para primer contacto con firma: body incluye `<br>` y firma HTML
+- Para follow-ups: body con `<br>` para saltos de línea, sin firma
+
+### Firma HTML
+
+- Solo en primer contacto
+- Obtener de `execution/fix_drafts_signature.py` variable `SIGNATURE_HTML`
+- Formato: `<div dir="ltr">{body_html}<br><br>-- <br>{SIGNATURE_HTML}</div>`
+- En follow-ups NO incluir firma (ya está en el hilo)
+
+### NUNCA enviar emails directamente
+
+Gmail se usa SOLO para crear borradores. [TU_NOMBRE] revisa, ajusta si necesita, y envía manualmente. NUNCA usar funciones de envío.
