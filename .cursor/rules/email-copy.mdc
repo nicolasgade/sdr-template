@@ -1,0 +1,181 @@
+---
+description: Templates exactos de emails por canal y tipo — NUNCA inventar copy
+globs: 
+alwaysApply: true
+---
+
+# Email Copy — Templates por canal y tipo
+
+REGLA ABSOLUTA: NUNCA inventar copy nuevo. Usar EXACTAMENTE estos templates. Solo cambiar [Nombre], [Empresa] y social proof según canal.
+
+---
+
+## PRIMER CORREO — Personal (con nombre verificado)
+
+### Subject
+`[Empresa] TIENE que conocer este producto`
+
+### Body base (template aprobado por [TU_NOMBRE])
+
+```
+[Nombre], cómo va todo?
+
+Me recomendaron hablar contigo porque mi empresa, [TU_EMPRESA], tiene un producto muy ganador que te puede interesar.
+
+[DESCRIPCIÓN_SENSORIAL_2_LÍNEAS_DE_TU_PRODUCTO]. Eso es [TU_PRODUCTO], un [CATEGORÍA] premium que ha conquistado [ALCANCE_GEOGRÁFICO] y estoy seguro encajaría perfecto en [Empresa].
+
+Me encantaría presentarte el producto. Es un best seller en [SOCIAL_PROOF] y estoy seguro que te va a sorprender. [EXTRA_LINEA]
+
+Avísame y lo coordinamos.
+
+Saludos.
+```
+
+### Social proof por canal
+
+| Canal | SOCIAL_PROOF | EXTRA_LINEA |
+|-------|-------------|-------------|
+| [CANAL_1] | [referencia de cliente existente en ese canal] | [línea adicional relevante, ej: "Tenemos un sabor sin azúcar"] |
+| [CANAL_2] | [referencia de cliente existente en ese canal] | [línea adicional relevante] |
+| [CANAL_3] | [referencia de cliente existente en ese canal] | (sin extra) |
+
+### Variante: [CANAL_ESPECÍFICO] (SOLO para 2do correo o segundo enfoque)
+
+```
+[Nombre], qué tal?
+
+Te comparto un dato rápido. En [CLIENTE_REFERENCIA] hay tiendas que ya venden más de [NÚMERO] unidades semanales de [TU_PRODUCTO], [COMPARACIÓN_RELEVANTE]. Y eso solo con la presentación de [SKU].
+
+Te lo menciono porque creo que [Empresa] tiene el mismo perfil de [OCASIÓN_COMPRA] que está funcionando tan bien en [CANAL].
+
+Tiene sentido enviarte más info o muestras del producto?
+
+Saludos.
+```
+
+### Firma HTML
+
+Solo en primer contacto. Obtener de `execution/fix_drafts_signature.py` variable `SIGNATURE_HTML`.
+Formato: `<div dir="ltr">{body_html}<br><br>-- <br>{SIGNATURE_HTML}</div>`
+En follow-ups NO incluir firma.
+
+---
+
+## PRIMER CORREO — Genérico (info@, contacto@, ventas@)
+
+### Subject
+`Consulta comercial — [CATEGORÍA] premium para [Empresa]`
+
+### Body (EXACTO, no modificar)
+
+```
+Hola, cómo va todo?
+
+Estoy buscando hablar con la persona encargada de compras o alianzas comerciales de [TU_CATEGORÍA_PRODUCTO].
+
+Me podrían ayudar a conectar?
+
+Mil gracias de antemano.
+
+Saludos.
+```
+
+SIN pitch, SIN producto, SIN firma HTML.
+
+---
+
+## SEGUNDO CORREO — Personal (follow-up)
+
+### Subject
+`Re: [subject original]` (en el mismo hilo con thread_id)
+
+### Body
+
+```
+Hola [Nombre],
+
+Te escribo rápido porque creo que [Empresa] puede ser un canal muy natural para [TU_PRODUCTO].
+
+[SOCIAL_PROOF_CON_NUMERO]
+
+Nosotros [OFERTA_DIFERENCIADORA] sin costo, adaptado al espacio que tengan disponible.
+
+Tiene sentido que te comparta más info o coordinemos una muestra?
+
+Saludos,
+```
+
+### Social proof con número por canal
+
+| Canal | SOCIAL_PROOF_CON_NUMERO |
+|-------|------------------------|
+| [CANAL_1] | En [CLIENTE_REFERENCIA] ya funciona muy bien como [OCASIÓN]. Vendemos +[X] unidades semanales por punto. |
+| [CANAL_2] | En [CLIENTE_REFERENCIA] ya estamos vendiendo entre [X] y [Y] unidades semanales en el canal. |
+
+### Lo que NUNCA usar en 2do correo personal
+- "solo para dar seguimiento"
+- "Te escribí hace unos días"
+- "Pudiste verlo?"
+- "Quedo atento"
+
+SIN firma HTML.
+
+---
+
+## SEGUNDO CORREO — Genérico (follow-up)
+
+### Subject
+`Re: [subject original]` (en el mismo hilo con thread_id)
+
+### Body (EXACTO, no modificar)
+
+```
+Hola, cómo va todo?
+
+Les escribí hace unos días consultando por la persona de compras o alianzas comerciales. Pudieron revisar mi correo?
+
+Seguimos atentos.
+
+Saludos.
+```
+
+SIN pitch, SIN producto, SIN firma HTML.
+
+---
+
+## TERCER CORREO — Breakup / Closing the loop (SOLO PERSONALES)
+
+### REGLA CRÍTICA: Los genéricos NUNCA reciben breakup
+
+Si el primer correo fue genérico (a info@, contacto@, ventas@), NO se hace breakup. Se sigue insistiendo hasta conseguir el contacto real de compras.
+
+### Subject
+`Re: [subject original]` (en el mismo hilo con thread_id)
+
+### Body
+
+```
+[Nombre], paso a disculparme si algo de lo que dije te molestó.
+
+Si tu no eres la persona correcta, crees posible que me puedas ayudar a conectar?
+
+Gracias de antemano.
+
+Saludos.
+```
+
+SIN firma HTML.
+
+---
+
+## Reglas generales de redacción
+
+- [IDIOMA], informal, directo, conversacional
+- Nunca usar dashes como separadores de listas en prosa
+- Máximo 1 pregunta por email
+- Bajo 120 palabras en el body
+- Cerrar con next step específico y de baja fricción
+- Firmar como: [TU_NOMBRE] — [TU_EMPRESA]
+- Nunca incluir precio mayorista (costo hacia la cadena) — solo PVP
+- Nunca mencionar [CLIENTE_SIN_REFERENCIA] como referencia de [DIFERENCIADOR]
+- Nunca exponer [INFORMACIÓN_CONFIDENCIAL]
