@@ -1,0 +1,94 @@
+---
+description: Operaciones CRM — endpoints, schemas y reglas
+globs: 
+alwaysApply: true
+---
+
+# CRM — [TU_EMPRESA]
+
+## Conexión
+
+- URL Base: `[TU_CRM_URL]`
+- API Key (header `x-api-key`): `[TU_CRM_API_KEY]`
+- Content-Type: `application/json`
+- Usar `curl` con `subprocess` para todas las llamadas
+
+## Endpoints
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | /api/public/clientes | Crear/actualizar cliente (deduplica por empresa) |
+| POST | /api/public/tareas | Crear tarea |
+| PATCH | /api/public/tareas/:id | Actualizar tarea (campo `estado`: "completada") |
+| POST | /api/public/actividad | Registrar nota de actividad |
+| GET | /api/public/dashboard | Resumen del pipeline |
+
+## Schemas
+
+### Cliente (POST /api/public/clientes)
+
+```json
+{
+  "empresa": "REQUERIDO — nombre empresa, deduplica por este campo",
+  "tipo_cliente": "[TUS_TIPOS_CLIENTE: ej. Farmacias | Conveniencia | Tienda departamental | Gourmet | Salud/Natural | Club Deportivo | etc.]",
+  "estado_pipeline": "Contactado | en negociación | cliente activo | No califica",
+  "nombre_contacto": "contacto principal",
+  "cargo": "cargo del contacto",
+  "email": "email del contacto",
+  "telefono": "teléfono",
+  "canal_contacto": "Email | LinkedIn | Teléfono | WhatsApp",
+  "fecha_primer_contacto": "YYYY-MM-DD",
+  "fecha_proximo_seguimiento": "YYYY-MM-DD",
+  "notas": "historial, contactos múltiples, rebotes, etc.",
+  "acuerdos_comerciales": "términos acordados"
+}
+```
+
+### Actividad (POST /api/public/actividad)
+
+```json
+{
+  "cliente_id": "REQUERIDO — UUID del cliente",
+  "tipo": "email | llamada | reunión | nota",
+  "contenido": "REQUERIDO — descripción de la actividad. Usar SIEMPRE 'contenido', no 'nota' ni 'descripcion'"
+}
+```
+
+### Tarea (POST /api/public/tareas)
+
+```json
+{
+  "cliente_id": "UUID",
+  "titulo": "descripción corta",
+  "descripcion": "detalle",
+  "tipo": "seguimiento | llamada | reunión",
+  "prioridad": "alta | media | baja",
+  "fecha_vencimiento": "YYYY-MM-DD"
+}
+```
+
+### Completar tarea (PATCH /api/public/tareas/:id)
+
+```json
+{
+  "estado": "completada"
+}
+```
+
+## Flujo estándar después de enviar un email
+
+1. `POST /api/public/clientes` — actualizar empresa con contacto y notas
+2. `POST /api/public/actividad` — registrar "Email enviado/programado a [contacto] ([email])"
+3. `POST /api/public/tareas` — crear tarea de seguimiento con fecha según cadencia James Shields
+
+## Reglas CRM (SIEMPRE seguir)
+
+- NUNCA crear, actualizar o eliminar registros sin aprobación explícita de [TU_NOMBRE] (excepto registrar actividad y crear tareas de seguimiento, que son rutinarios)
+- NUNCA inventar datos fiscales (RFC, razón social, etc.)
+- NUNCA crear cliente sin contacto verificado (email verified o ruta de contacto clara)
+- Cuando hay múltiples contactos en una empresa: poner el más relevante como `nombre_contacto` y listar TODOS en `notas`
+- SIEMPRE registrar actividad después de enviar emails o hacer contacto
+- SIEMPRE crear tarea de seguimiento con fecha específica
+- SIEMPRE categorizar con `tipo_cliente`
+- NUNCA agendar tareas en sábado o domingo
+- El campo de actividad es `contenido`, NO `nota` ni `descripcion`
