@@ -1,0 +1,90 @@
+---
+description: Investigación de prospectos — Apollo, Apify y calificación
+globs: 
+alwaysApply: true
+---
+
+# Investigación de Prospectos
+
+## Apollo.io — Enrichment de contactos
+
+### Conexión
+
+- API Base: `https://api.apollo.io/api/v1`
+- Auth header: `X-Api-Key: [TU_APOLLO_API_KEY]`
+- Usar `curl` con `subprocess` para las llamadas
+
+### Flujo de búsqueda
+
+1. Buscar org ID: `POST /mixed_companies/search` con `q_organization_name`
+2. Buscar personas: `POST /mixed_people/api_search` con `organization_ids` y `person_titles`
+3. Enriquecer persona: `POST /people/match` con `id` o `email`
+
+### Títulos para filtrar
+
+```
+comprador, category manager, gerente de compras, buyer, comercial,
+director comercial, [TU_CATEGORÍA], food & beverage,
+operaciones, alianzas, partnerships, ventas, marketing, administración
+```
+
+### Regla de confianza de emails
+
+| Status Apollo | Significado | Acción |
+|--------------|-------------|--------|
+| verified | Apollo confirmó que el buzón existe | Usar con confianza |
+| extrapolated | Apollo adivinó el patrón, nunca validó | NO usar para enviar email. Buscar alternativa. |
+| unavailable | No hay email | Buscar otra ruta (teléfono, LinkedIn, formulario) |
+
+**REGLA CRÍTICA: Solo usar emails VERIFIED de Apollo. Si solo hay extrapolated, NO enviar email — buscar ruta alternativa (teléfono, LinkedIn, formulario de proveedores, Instagram DM).**
+
+## Apify Google Places
+
+### Actor
+
+`compass/crawler-google-places`
+
+### Campos correctos
+
+```json
+{
+  "actorId": "compass/crawler-google-places",
+  "input": {
+    "searchStringsArray": ["[TU_BÚSQUEDA] [TU_CIUDAD]"],
+    "locationQuery": "[TU_CIUDAD], [TU_PAÍS]",
+    "maxItems": 20,
+    "language": "[IDIOMA_CODE]"
+  }
+}
+```
+
+- Usar `searchStringsArray` (NO `searchStrings`)
+- Si falla con 402 de memoria: reducir `memory`, `maxItems` y búsquedas concurrentes
+
+## Calificación de prospectos
+
+### High fit
+- Tiene [REQUISITO_DISPLAY] o puede instalar uno
+- Vende premium/[TU_CATEGORÍA]
+- Alto tráfico con poder adquisitivo
+- Contacto verificado
+- Formato similar a clientes exitosos
+
+### Medium fit
+- Potencial para [REQUISITO_DISPLAY]
+- Vende [CATEGORÍA] pero no premium
+- Contacto parcialmente verificado
+
+### Low fit
+- Incierto sobre [REQUISITO_DISPLAY]
+- Mass market
+- Sin contacto
+
+## Reglas de calidad
+
+- NUNCA fabricar nombres, roles, empresas, teléfonos o emails
+- Cada contacto debe tener al menos una fuente verificable
+- Cuando algo es incierto, marcarlo claramente
+- Priorizar calidad sobre cantidad: 20 verificados > 100 inventados
+- No crear cliente en CRM sin contacto verificado
+- Siempre proveer resumen: total encontrados, calificados por fit, metodología, top 10 recomendados
