@@ -1,0 +1,58 @@
+---
+description: Cadencia James Shields para seguimientos y reglas de tareas CRM
+globs: 
+alwaysApply: true
+---
+
+# Cadencia de Follow-up — James Shields
+
+## Timing entre correos
+
+| Correo | Cuándo enviar | Estilo |
+|--------|--------------|--------|
+| 1er correo (original) | Día 0 | Pitch completo (personal) o consulta (genérico) |
+| 2do correo (follow-up) | 2-3 días hábiles después del 1er | Mismo formato pero más corto, con social proof numérico |
+| 3er correo (breakup) | 5-7 días hábiles después del 2do | Ultra-corto, closing the loop, máximo 2-3 líneas |
+
+## Regla de tareas en CRM
+
+- Fecha de tarea = día que [TU_NOMBRE] monta/programa el borrador
+- El correo se envía al día siguiente a las 7:30am
+- Para calcular fecha de tarea: fecha de envío ideal MENOS 1 día hábil
+- NUNCA agendar tareas en sábado o domingo. Si cae en fin de semana, mover al viernes anterior.
+
+### Ejemplo práctico
+
+1er correo enviado lunes 26/05 → 2do correo debe salir miércoles 28 o jueves 29 → tarea para montar borrador: martes 27 o miércoles 28
+
+2do correo enviado jueves 29/05 → 3er correo debe salir jueves 5 o viernes 6 de junio → tarea para montar borrador: miércoles 4 o jueves 5
+
+## Diferenciación por tipo de primer correo
+
+- Si el primer correo fue **personal** (con nombre, pitch completo) → el follow-up lleva social proof numérico y propuesta. Ver templates en `email-copy.mdc`. El 3er correo es breakup (closing the loop).
+- Si el primer correo fue **genérico** (a info@, contacto@) → el follow-up es ultra-corto: solo preguntar si revisaron el correo. NO repetir pitch ni social proof. **NUNCA hacer breakup con genéricos** — se sigue insistiendo hasta conseguir el contacto real de compras.
+
+## Regla crítica: leer hilo completo antes de proponer follow-up
+
+SIEMPRE leer el hilo completo en Gmail (incluyendo mensajes enviados por [TU_NOMBRE]) antes de crear cualquier borrador de seguimiento. Nunca proponer respuesta basándose solo en el último correo recibido.
+
+```bash
+python3 execution/gmail_client.py fetch "to:email@empresa.com" 5
+```
+
+## Qué hacer cuando un prospecto responde
+
+1. Leer la respuesta completa
+2. Verificar si [TU_NOMBRE] ya respondió (buscar en SENT)
+3. Actualizar CRM: registrar actividad + actualizar estado pipeline si aplica
+4. Si [TU_NOMBRE] NO ha respondido: proponer borrador de respuesta adaptado al contexto
+5. Si [TU_NOMBRE] YA respondió: solo registrar en CRM y crear tarea de seguimiento
+
+## Estados de pipeline según etapa
+
+| Situación | Estado pipeline |
+|-----------|----------------|
+| Email enviado, sin respuesta | Contactado |
+| Respondieron pidiendo info/reunión | en negociación |
+| Rechazaron o no califica | No califica |
+| Cerraron acuerdo | cliente activo |
